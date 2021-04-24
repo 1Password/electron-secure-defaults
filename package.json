@@ -1,29 +1,36 @@
 {
-  "name": "electron-quick-start-typescript",
+  "name": "electron-secure-defaults",
   "version": "1.0.0",
-  "description": "A minimal Electron application written with Typescript",
+  "description": "A starter kit for security conscious Electron apps",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "npm run build && electron ./dist/main.js"
+    "start": "npm run build && electron ./dist/main.js",
+    "electronegativity": "electronegativity -i ./src"
   },
-  "repository": "https://github.com/electron/electron-quick-start-typescript",
+  "repository": "https://github.com/1password/electron-secure-defaults",
   "keywords": [
     "Electron",
     "quick",
     "start",
     "tutorial",
     "demo",
-    "typescript"
+    "typescript",
+    "secure"
   ],
-  "author": "GitHub",
+  "author": "1Password",
+  "contributors": [
+    "GitHub",
+    "Mitchell Cohen (github.com/mitchchn)"
+  ],
   "license": "CC0-1.0",
   "devDependencies": {
+    "@doyensec/electronegativity": "^1.9.0",
     "@typescript-eslint/eslint-plugin": "^3.4.0",
     "@typescript-eslint/parser": "^3.4.0",
+    "electron": "^12.0.4",
     "eslint": "^7.3.1",
-    "electron": "^9.4.0",
     "typescript": "^3.9.5"
   },
   "dependencies": {}

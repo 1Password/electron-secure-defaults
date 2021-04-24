@@ -4,3 +4,11 @@
 // nodeIntegration is set to true in webPreferences.
 // Use preload.js to selectively enable features
 // needed in the renderer process.
+
+// Message will be logged in the main process (stdout)
+window.api.sayHello("Electron");
+
+window.api.getAppMetrics().then((metrics) => {
+  // Message will be logged in the web inspector
+  console.log("App metrics from main process", metrics);
+});

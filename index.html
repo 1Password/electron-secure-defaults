@@ -3,15 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Hello World!</title>
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <meta
-      http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
+    <!--
+      // SECURITY: CSP is defined in main process
+      https://www.electronjs.org/docs/tutorial/security#6-define-a-content-security-policy
+    -->
   </head>
   <body>
     <h1>Hello World!</h1>
