@@ -19,7 +19,7 @@ function createWindow(session: Session) {
       // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-3
       contextIsolation: true,
       // SECURITY: disable the remote module
-      // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-remote
+      // https://github.com/1password/electron-secure-defaults/SECURITY.md#remote-module
       enableRemoteModule: false,
       // SECURITY: sanitize JS values that cross the contextBridge
       // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-3

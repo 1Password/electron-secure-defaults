@@ -1,14 +1,14 @@
 # electron-secure-defaults
 
-This is a security-enhanced fork of [electron-quick-start-typescript](https://github.com/electron/electron-quick-start-typescript). It can be used as a starter kit for a new Electron app, or as an annotated resource for annyone looking to harden an existing app.
+This is a security-enhanced fork of [electron-quick-start-typescript](https://github.com/electron/electron-quick-start-typescript). It can be used as a starter kit for a new Electron app, or as an annotated resource for anyone looking to improve an existing project.
 
-The configuration in this repository is used in conjunction with [electron-hardener](https://github.com/1password/electron-hardener) to secure the [1Password](https://1password.com) desktop app.
+The configuration in this repository is used in conjunction with [electron-hardener](https://github.com/1password/electron-hardener) to provide a secure frontend foundation for the [1Password](https://1password.com) desktop app.
 
 ## Usage
 
-Build and run the quick start demo with `npm install && npm start`. For more detail, see [electron-quick-start-typescript](https://github.com/electron/electron-quick-start-typescript) to b
+Build and run the quick start demo with `npm install && npm start`. For more information, see [electron-quick-start-typescript](https://github.com/electron/electron-quick-start-typescript).
 
-[Electronegativity](https://github.com/doyensec/electronegativity) is included for static analysis. Run `npm run electronegativity` to check for vulnerabilities. Warnings which are correctly handled in the codebase are suppressed.
+[Electronegativity](https://github.com/doyensec/electronegativity) is included and configured for the codebase. Run `npm run electronegativity` to check for vulnerabilities.
 
 ## Security Design
 
@@ -20,11 +20,11 @@ The decisions made in this repository are informed by a number of sources:
 
 Settings are chosen for their applicability to the security and privacy design of the 1Password desktop app. We believe these are reasonable defaults for other modern apps, but it is your responsibility to understand the security goals of your application and the expectations of your users.
 
-Security-sensitive code in the repository is annotated, and can be looked up by searching for `// SECURITY:`. Inline links are provided to the relevant sections below.
+Security-sensitive code in the repository is annotated by `// SECURITY:`. Inline links are provided to the relevant sections below.
 
 ## Electron security checklist
 
-This project tracks the offcial Electron [security checklist](https://www.electronjs.org/docs/tutorial/security#checklist-security-recommendations). Implementation status for each rule is given below.
+This project tracks the official Electron [security checklist](https://www.electronjs.org/docs/tutorial/security#checklist-security-recommendations). Current implementation status for each rule is given below.
 
 <a name="rule-1"></a>
 
@@ -44,7 +44,7 @@ Rule: https://www.electronjs.org/docs/tutorial/security#2-do-not-enable-nodejs-i
 
 Status: ✅
 
-Disabled by default in modern versions of Electron. `nodeIntegration` is also explicitly set to `false` in the the browser window.
+Disabled by default in modern versions of Electron. Remains explicitly disabled for the the browser window.
 
 <a name="rule-3"></a>
 
@@ -54,11 +54,11 @@ Rule: https://www.electronjs.org/docs/tutorial/security#3-enable-context-isolati
 
 Status: ✅
 
-Enabled by default in Electron 12. `contextIsolation` is also explicitly set to `true` for the browser window.
+Enabled by default in Electron 12. Remains explicitly enabled for the browser window.
 
 A limited API is provided to the renderer process over the `ContextBridge`.
 
-<a name="rule-4"></a
+<a name="rule-4"></a>
 
 ### 4. Handle session permission requests from remote content
 
@@ -136,7 +136,7 @@ Rule: https://www.electronjs.org/docs/tutorial/security#11-verify-webview-option
 
 Status: ✅
 
-The app blocks `<webview>` tag creation in the renderer.
+WebView creation is blocked in the main process.
 
 <a name="rule-12"></a>
 
@@ -146,7 +146,7 @@ Rule: https://www.electronjs.org/docs/tutorial/security#12-disable-or-limit-navi
 
 Status: ✅
 
-The app blocks all navigation in the renderer.
+Renderer navigation is blocked in the main process.
 
 <a name="rule-13"></a>
 
@@ -156,7 +156,7 @@ Rule: https://www.electronjs.org/docs/tutorial/security#13-disable-or-limit-crea
 
 Status: ✅
 
-The app blocks creation of new windows from the renderer.
+New window creation is blocked in the main process.
 
 <a name="rule-14"></a>
 
@@ -178,23 +178,23 @@ Status: ✅
 
 Electron 12.x is the current stable release.
 
-<a name="rule-remote"></a>
-
-### (Historical) Do not use the Remote module
-
-Status: ✅
-
-The [remote](https://www.electronjs.org/docs/api/remote) was disabled by default in Electron 10, and deprecated in Electron 12. It remains explicitly disabled.
-
 ## Additional security measures
 
-The following changes are not part of the official checklist.
+The following measures are also configured in this repository.
+
+<a name="disable-remote"></a>
+
+### Disable the Remote module
+
+The `remote` module was disabled by default in Electron 10, and was deprecated in Electron 12. It remains explicitly disabled for the browser window.
+
+Learn more: [remote](https://www.electronjs.org/docs/api/remote).
 
 <a name="sandbox"></a>
 
 ### Sandbox the renderer process
 
-The `sandbox` option prevents the renderer processfrom accessing Node or Electron APIs. It is enabled globally as well as in for browser window.
+The `sandbox` option prevents the renderer process from accessing Node or Electron APIs. It is enabled globally as well as in for browser window.
 
 Learn more: https://www.electronjs.org/docs/api/sandbox-option.
 
@@ -202,7 +202,7 @@ Learn more: https://www.electronjs.org/docs/api/sandbox-option.
 
 ### Further prevent new window creation
 
-The (recently deprecated) `new-window` event does not automatically prevent a new window from being opened by middle-clicking it. The app uses both `disableBlinkFeatures: "Auxclick"` and `setWindowOpenHandler` to prevent this.
+The (recently deprecated) `new-window` event does not always prevent windows from being opened. The app uses `disableBlinkFeatures: "Auxclick"` and the new `setWindowOpenHandler` to prevent further instances.
 
 Learn more: https://www.electronjs.org/docs/api/window-open.
 
@@ -210,19 +210,19 @@ Learn more: https://www.electronjs.org/docs/api/window-open.
 
 ### Disable the session cache
 
-The app creates a custom `Session` instead of using the default. The persistent session has its cache disabled to prevent network resources from being saved to disk, where they can be read in plain text. This is especially important on Windows, where app data, including the cache is saved in `%AppData%\Roaming`.
+The app creates a custom `Session` object instead of using the default session. The session is persistent but has its cache disabled to prevent network resources from being saved to disk automatically. This is especially important on Windows, where Electron user data, including the cache, is saved in `%AppData%\Roaming`.
 
-The custom session can be made more private by removing the `persist:` prefix, in which case nothing will be written to disk, including `localStorage`. The user experience would then be similar to using Chrome in Incognito mode.
+The session can be made even more private by removing the `persist:` prefix from the partition, in which case nothing will be written to disk, including `localStorage`. The user experience would then be similar to using Chrome in Incognito mode.
 
 Learn more: https://www.electronjs.org/docs/api/session#sessionfrompartitionpartition-options.
 
 ### Restrict dev tools access in the packaged app
 
-Easy acess to the web inspector is necessary during development, but it can be used as an attack vector in production. Users can be tricked into executing code which would expose their personal information or compromise the functionality of the app. To prevent this from happening, dev tools are disabled in the packaged app.
+Easy access to the web inspector is necessary during development, but it can be used as an attack vector in production. Users can be tricked into executing code which would expose their personal information or compromise the functionality of the app. To prevent this from happening, dev tools access is disabled in the packaged app.
 
 ### Use `strict` TypeScript setting
 
-The app prevents JavaScript error at runtime by setting `strict` in `tsconfig.json`.
+The `strict` setting in `tsconfig.json` enforces correct code and prevents JavaScript errors at runtime.
 
 ## Disclaimer
 
