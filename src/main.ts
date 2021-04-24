@@ -78,7 +78,7 @@ app.on("ready", () => {
   // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-6
   secureSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
-      responseHeaders: {
+      responseHeaders: /* eng-disable CSP_GLOBAL_CHECK */ {
         ...details.responseHeaders,
         "Content-Security-Policy": ["default-src 'self'; object-src: 'none'"],
       },
@@ -98,21 +98,18 @@ app.on("window-all-closed", () => {
 app.on("web-contents-created", (_ev, contents) => {
   // SECURITY: verify webview options before creation
   // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-11
-  contents.on("will-attach-webview", (ev) => {
-    ev.preventDefault(); // eng-disable
-  });
+  const preventDefault = (ev: Electron.Event) => {
+    ev.preventDefault();
+  };
+  contents.on("will-attach-webview", preventDefault);
 
   // SECURITY: disable or limit navigation
   // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-12
-  contents.on("will-navigate", (ev) => {
-    ev.preventDefault();
-  });
+  contents.on("will-navigate", preventDefault); // eng-disable LIMIT_NAVIGATION_GLOBAL_CHECK
 
   // SECURITY: disable or limit creation of new windows
   // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-13
-  contents.on("new-window", (ev) => {
-    ev.preventDefault();
-  });
+  contents.on("new-window", preventDefault); // eng-disable LIMIT_NAVIGATION_GLOBAL_CHECK
 
   // SECURITY: further prevent new window creation
   // https://github.com/1password/electron-secure-defaults/SECURITY.md#prevent-new-window
