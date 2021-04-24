@@ -9,26 +9,29 @@ function createWindow(session: Session) {
     height: 600,
     webPreferences: {
       preload: path.join(app.getAppPath(), "preload.js"),
-      // SECURITY: use the custom secure session
+      // SECURITY: use a custom session without a cache
+      // https://github.com/1password/electron-secure-defaults/SECURITY.md#disable-session-cache
       session,
       // SECURITY: disable node integration for remote content
-      //https://www.electronjs.org/docs/tutorial/security#2-do-not-enable-nodejs-integration-for-remote-content
+      // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-2
       nodeIntegration: false,
       // SECURITY: enable context isolation for remote content
-      // https://www.electronjs.org/docs/tutorial/security#3-enable-context-isolation-for-remote-content
+      // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-3
       contextIsolation: true,
       // SECURITY: disable the remote module
-      // https://www.electronjs.org/docs/tutorial/security#15-disable-the-remote-module
+      // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-remote
       enableRemoteModule: false,
-      // SECURITY: sanitize JS values that cross the contextBridge (enabled by default in Electron 12)
-      // https://github.com/electron/electron/pull/24114
+      // SECURITY: sanitize JS values that cross the contextBridge
+      // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-3
       worldSafeExecuteJavaScript: true,
-      // SECURITY: restrict web inspector access in the packaged app
+      // SECURITY: restrict dev tools access in the packaged app
+      // https://github.com/1password/electron-secure-defaults/SECURITY.md#restrict-dev-tools
       devTools: !app.isPackaged,
-      // SECURITY: disable navigation to untrusted origins via middle-click
-      // https://github.com/doyensec/electronegativity/wiki/AUXCLICK_JS_CHECK
+      // SECURITY: disable navigation via middle-click
+      // https://github.com/1password/electron-secure-defaults/SECURITY.md#disable-new-window
       disableBlinkFeatures: "Auxclick",
-      // SECURITY: sandbox this renderer content
+      // SECURITY: sandbox renderer content
+      // https://github.com/1password/electron-secure-defaults/SECURITY.md#sandbox
       sandbox: true,
     },
     width: 800,
@@ -42,16 +45,16 @@ function createWindow(session: Session) {
 }
 
 // SECURITY: sandbox all renderer content
+// https://github.com/1password/electron-secure-defaults/SECURITY.md#sandox
 app.enableSandbox();
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  // SECURITY: use a custom session to control aspects
-  // such as persistence, caching, and network requests.
+  // SECURITY: use a custom persistent session without a cache
+  // https://github.com/1password/electron-secure-defaults/SECURITY.md#disable-session-cache
   const secureSession = session.fromPartition("persist:app", {
-    // SECURITY: do not use an on-disk cache for network data and images
     cache: false,
   });
 
@@ -64,7 +67,7 @@ app.on("ready", () => {
   });
 
   // SECURITY: deny permission requests from renderer
-  // https://www.electronjs.org/docs/tutorial/security#4-handle-session-permission-requests-from-remote-content
+  // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-4
   secureSession.setPermissionRequestHandler(
     (_webContents, _permission, callback) => {
       callback(false);
@@ -72,7 +75,7 @@ app.on("ready", () => {
   );
 
   // SECURITY: define a strict CSP
-  //www.electronjs.org/docs/tutorial/security#6-define-a-content-security-policy
+  // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-6
   secureSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
@@ -93,23 +96,28 @@ app.on("window-all-closed", () => {
 });
 
 app.on("web-contents-created", (_ev, contents) => {
-  // eng-disable
   // SECURITY: verify webview options before creation
-  // https://www.electronjs.org/docs/tutorial/security#11-verify-webview-options-before-creation
+  // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-11
   contents.on("will-attach-webview", (ev) => {
     ev.preventDefault(); // eng-disable
   });
 
   // SECURITY: disable or limit navigation
-  // https://www.electronjs.org/docs/tutorial/security#12-disable-or-limit-navigation
+  // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-12
   contents.on("will-navigate", (ev) => {
     ev.preventDefault();
   });
 
   // SECURITY: disable or limit creation of new windows
-  // https://www.electronjs.org/docs/tutorial/security#13-disable-or-limit-creation-of-new-windows
+  // https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-13
   contents.on("new-window", (ev) => {
     ev.preventDefault();
+  });
+
+  // SECURITY: further prevent new window creation
+  // https://github.com/1password/electron-secure-defaults/SECURITY.md#prevent-new-window
+  contents.setWindowOpenHandler(() => {
+    return { action: "deny" };
   });
 });
 

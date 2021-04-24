@@ -1,6 +1,3 @@
-// SECURITY: only exposed a limited API over the preload process
-// using contextIsolation and sandbox
-
 import { contextBridge, ipcRenderer } from "electron";
 
 // It has the same sandbox as a Chrome extension.
@@ -20,9 +17,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// SECURITY: create a secure API for the renderer process.
-// https://www.electronjs.org/docs/tutorial/context-isolation
-//
 // The API relays method calls to the main process using `ipcRenderer` methods.
 // It does not provide direct access to `ipcRenderer` or other Electron or Node APIs.
 export const RendererApi = {
@@ -35,5 +29,6 @@ export const RendererApi = {
   },
 };
 
-// SECURITY: expose a secure API to the main process over the context bridge
+// SECURITY: expose a limted API to the renderer over the context bridge
+// https://github.com/1password/electron-secure-defaults/SECURITY.md#rule-3
 contextBridge.exposeInMainWorld("api", RendererApi);
