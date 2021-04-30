@@ -180,7 +180,7 @@ Electron 12.x is the current stable release.
 
 ## Additional security measures
 
-The following measures are also configured in this repository.
+The following features are also configured in this repository.
 
 <a name="disable-remote"></a>
 
@@ -210,9 +210,9 @@ Learn more: https://www.electronjs.org/docs/api/window-open.
 
 ### Disable the session cache
 
-The app creates a custom `Session` object instead of using the default session. The session is persistent but has its cache disabled to prevent network resources from being saved to disk automatically. This is especially important on Windows, where Electron user data, including the cache, is saved in `%AppData%\Roaming`.
+A custom `Session` object is used instead of using the default session. The session is persistent, but its cache is disabled to prevent network resources from being saved to disk automatically. This is especially important on Windows, where Electron saves its user data to `%AppData%\Roaming`.
 
-The session can be made even more private by removing the `persist:` prefix from the partition, in which case nothing will be written to disk, including `localStorage`. The user experience would then be similar to using Chrome in Incognito mode.
+The session can be made more private by removing the `persist:` prefix from the partition, in which case nothing will be written to disk, including `localStorage`. The user experience would then be similar to using Chrome in Incognito mode.
 
 Learn more: https://www.electronjs.org/docs/api/session#sessionfrompartitionpartition-options.
 
