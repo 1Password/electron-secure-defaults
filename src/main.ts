@@ -80,7 +80,7 @@ app.on("ready", () => {
     callback({
       responseHeaders: /* eng-disable CSP_GLOBAL_CHECK */ {
         ...details.responseHeaders,
-        "Content-Security-Policy": ["default-src 'self'; object-src: 'none'"],
+        "Content-Security-Policy": ["default-src: 'self'; object-src: 'none'"],
       },
     });
   });
